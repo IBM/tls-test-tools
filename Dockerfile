@@ -38,28 +38,28 @@ RUN true && \
 
 ## Releasing disabled until OSS set up!
 
-# ## Release #####################################################################
-# #
-# # This phase builds the release and publishes it to pypi
-# ##
-# FROM test as release
-# ARG PYPI_TOKEN
-# ARG RELEASE_VERSION
-# ARG RELEASE_DRY_RUN
-# RUN ./scripts/publish.sh
+## Release #####################################################################
+#
+# This phase builds the release and publishes it to pypi
+##
+FROM test as release
+ARG PYPI_TOKEN
+ARG RELEASE_VERSION
+ARG RELEASE_DRY_RUN
+RUN ./scripts/publish.sh
 
-# ## Release Test ################################################################
-# #
-# # This phase installs the indicated version from PyPi and runs the unit tests
-# # against the installed version.
-# ##
-# FROM base as release_test
-# ARG RELEASE_VERSION
-# ARG RELEASE_DRY_RUN
-# COPY ./tests /src/tests
-# COPY ./scripts/run_tests.sh /src/scripts/run_tests.sh
-# COPY ./scripts/install_release.sh /src/scripts/install_release.sh
-# RUN true && \
-#     ./scripts/install_release.sh && \
-#     ./scripts/run_tests.sh && \
-#     true
+## Release Test ################################################################
+#
+# This phase installs the indicated version from PyPi and runs the unit tests
+# against the installed version.
+##
+FROM base as release_test
+ARG RELEASE_VERSION
+ARG RELEASE_DRY_RUN
+COPY ./tests /src/tests
+COPY ./scripts/run_tests.sh /src/scripts/run_tests.sh
+COPY ./scripts/install_release.sh /src/scripts/install_release.sh
+RUN true && \
+    ./scripts/install_release.sh && \
+    ./scripts/run_tests.sh && \
+    true
