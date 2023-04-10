@@ -6,3 +6,11 @@ When writing code that needs to either host a server with TLS enabled or make co
 often difficult to write succinct unit tests that exercise these connections. This package aims to fix that! It provides
 utilities for auto-generating self-signed CAs and derived server/client pairs. It also provides tools for finding open
 ports to host temporary servers on.
+
+## Installation
+
+To install, simply use `pip`
+
+```sh
+pip install tls-test-tools
+```
