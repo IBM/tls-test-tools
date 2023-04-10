@@ -1,0 +1,9 @@
+# Testing
+pytest>=6.2.5
+pytest-cov>=3.0.0
+
+# Sample servers
+Flask>=2.2.3,<3
+grpcio>=1.51.3,<2
+requests>=2.28.2,<3
+protobuf>=3,<4

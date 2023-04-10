@@ -1,0 +1,12 @@
+working*
+build
+*.pyc
+__pycache__
+dist/
+venv
+*.egg-info
+.idea
+reports
+htmlcov
+.coverage
+.bash_history
