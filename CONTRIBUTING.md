@@ -6,7 +6,7 @@ The following is a set of guidelines for contributing. These are just guidelines
 
 ## What Should I Know Before I Get Started?
 
-If you're new to GitHub and working with open source repositories, this section will be helpful. Otherwise, you can skip to learning how to [set up your dev environment](#set-up-your-dev-environment)
+If you're new to GitHub and working with open source repositories, this section will be helpful. Otherwise, you can skip to learning how to [set up your dev environment](#set-up-your-dev-environment).
 
 ### Code of Conduct
 
@@ -46,7 +46,7 @@ Improvements to existing functionality are tracked as [GitHub issues using the U
 
 ## Development
 
-### Set up your dev environments
+### Set up your dev environment
 
 #### Using Docker
 
