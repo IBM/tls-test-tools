@@ -42,7 +42,7 @@ Enhancement suggestions are tracked as [GitHub issues using the Feature Request 
 
 #### How Do I Submit A (Good) Improvement Item?
 
-Improvements to existing functionality are tracked as [GitHub issues using the User Story template](https://github.com/IBM/tls-test-tools/issues/new?assignees=&labels=&template=user-story.md&title=). Create an issue and provide the information suggested in the feature requests or user story issue template.
+Improvements to existing functionality are tracked as [GitHub issues using the User Story template](https://github.com/IBM/tls-test-tools/issues/new?assignees=&labels=&template=user_story.md&title=). Create an issue and provide the information suggested in the feature requests or user story issue template.
 
 ## Development
 
