@@ -10,18 +10,18 @@ jobs:
   build-38:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run unit tests
         run: docker build . --target=test --build-arg PYTHON_VERSION=3.8
   build-39:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run unit tests
         run: docker build . --target=test --build-arg PYTHON_VERSION=3.9
   build-310:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run unit tests
         run: docker build . --target=test --build-arg PYTHON_VERSION=3.10
