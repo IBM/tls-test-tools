@@ -33,11 +33,8 @@ import alog
 
 log = alog.use_channel("TLST")
 
-# Get timezone-aware UTC for Python 3.12+ compatibility
-try:
-    _UTC = datetime.timezone.utc
-except AttributeError:
-    _UTC = datetime.timezone(datetime.timedelta(0))
+# Timezone-aware UTC for datetime operations
+_UTC = datetime.timezone.utc
 
 
 def _utcnow() -> datetime.datetime:
