@@ -41,6 +41,7 @@ def _utcnow() -> datetime.datetime:
     """Get current UTC time in a timezone-aware manner."""
     return datetime.datetime.now(_UTC)
 
+
 ## API #########################################################################
 
 
@@ -142,7 +143,8 @@ def generate_ca_cert(key: rsa.RSAPrivateKey, **subject_kwargs) -> str:
         .not_valid_before(now)
         .not_valid_after(
             # Our certificate will be valid for 10000 days
-            now + datetime.timedelta(days=10000)
+            now
+            + datetime.timedelta(days=10000)
         )
         .add_extension(
             # X509v3 Basic Constraints: critical
@@ -246,9 +248,7 @@ def generate_derived_key_cert_pair(
         .public_key(server_pub_key)
         .serial_number(x509.random_serial_number())
         .not_valid_before(now)
-        .not_valid_after(
-            now + datetime.timedelta(days=expire_days)
-        )
+        .not_valid_after(now + datetime.timedelta(days=expire_days))
         .add_extension(
             x509.SubjectAlternativeName(
                 [x509.DNSName(san) for san in san_list or ["localhost"]]
