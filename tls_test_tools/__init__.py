@@ -33,6 +33,15 @@ import alog
 
 log = alog.use_channel("TLST")
 
+# Timezone-aware UTC for datetime operations
+_UTC = datetime.timezone.utc
+
+
+def _utcnow() -> datetime.datetime:
+    """Get current UTC time in a timezone-aware manner."""
+    return datetime.datetime.now(_UTC)
+
+
 ## API #########################################################################
 
 
@@ -119,16 +128,22 @@ def generate_ca_cert(key: rsa.RSAPrivateKey, **subject_kwargs) -> str:
     # Create self-signed CA
     log.debug("Creating CA")
     subject = get_subject(**subject_kwargs)
+    pub_key = key.public_key()
+
+    # Generate Subject Key Identifier for the CA
+    ski = x509.SubjectKeyIdentifier.from_public_key(pub_key)
+
+    now = _utcnow()
     ca = (
         x509.CertificateBuilder()
         .subject_name(subject)
         .issuer_name(subject)
-        .public_key(key.public_key())
+        .public_key(pub_key)
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.utcnow())
+        .not_valid_before(now)
         .not_valid_after(
             # Our certificate will be valid for 10000 days
-            datetime.datetime.utcnow()
+            now
             + datetime.timedelta(days=10000)
         )
         .add_extension(
@@ -152,6 +167,16 @@ def generate_ca_cert(key: rsa.RSAPrivateKey, **subject_kwargs) -> str:
                 decipher_only=False,
             ),
             critical=True,
+        )
+        .add_extension(
+            # X509v3 Subject Key Identifier
+            ski,
+            critical=False,
+        )
+        .add_extension(
+            # X509v3 Authority Key Identifier (points to self for CA)
+            x509.AuthorityKeyIdentifier.from_issuer_subject_key_identifier(ski),
+            critical=False,
         )
         .sign(key, hashes.SHA256(), default_backend())
     )
@@ -206,16 +231,24 @@ def generate_derived_key_cert_pair(
         [subject_kwargs.get("common_name", "foo.com"), "derived"]
     )
     subject_name = get_subject(**subject_kwargs)
+
+    # Generate Subject Key Identifier for this certificate
+    server_pub_key = key.public_key()
+    ski = x509.SubjectKeyIdentifier.from_public_key(server_pub_key)
+
+    # Get the CA's public key to create Authority Key Identifier
+    ca_pub_key = ca_key.public_key()
+    ca_ski = x509.SubjectKeyIdentifier.from_public_key(ca_pub_key)
+
+    now = _utcnow()
     cert = (
         x509.CertificateBuilder()
         .subject_name(subject_name)
         .issuer_name(issuer_name)
-        .public_key(key.public_key())
+        .public_key(server_pub_key)
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.utcnow())
-        .not_valid_after(
-            datetime.datetime.utcnow() + datetime.timedelta(days=expire_days)
-        )
+        .not_valid_before(now)
+        .not_valid_after(now + datetime.timedelta(days=expire_days))
         .add_extension(
             x509.SubjectAlternativeName(
                 [x509.DNSName(san) for san in san_list or ["localhost"]]
@@ -244,6 +277,16 @@ def generate_derived_key_cert_pair(
             x509.ExtendedKeyUsage(
                 [ExtendedKeyUsageOID.CLIENT_AUTH, ExtendedKeyUsageOID.SERVER_AUTH]
             ),
+            critical=False,
+        )
+        .add_extension(
+            # X509v3 Subject Key Identifier
+            ski,
+            critical=False,
+        )
+        .add_extension(
+            # X509v3 Authority Key Identifier (points to CA's SKI)
+            x509.AuthorityKeyIdentifier.from_issuer_subject_key_identifier(ca_ski),
             critical=False,
         )
         .sign(ca_key, hashes.SHA256(), default_backend())

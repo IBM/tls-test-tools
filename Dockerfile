@@ -2,7 +2,7 @@
 #
 # This phase sets up dependencies for the other phases
 ##
-ARG PYTHON_VERSION=3.7
+ARG PYTHON_VERSION=3.10
 ARG BASE_IMAGE=python:${PYTHON_VERSION}-slim
 FROM ${BASE_IMAGE} as base
 
@@ -13,7 +13,7 @@ WORKDIR /src
 COPY requirements.txt requirements_test.txt /src/
 RUN true && \
     apt-get update -y && \
-    apt-get install make git -y && \
+    apt-get install make git libatomic1 gcc -y && \
     apt-get clean autoclean && \
     apt-get autoremove --yes && \
     pip install pip --upgrade && \
