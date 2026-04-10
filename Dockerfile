@@ -13,7 +13,7 @@ WORKDIR /src
 COPY requirements.txt requirements_test.txt /src/
 RUN true && \
     apt-get update -y && \
-    apt-get install make git libatomic1 -y && \
+    apt-get install make git libatomic1 gcc -y && \
     apt-get clean autoclean && \
     apt-get autoremove --yes && \
     pip install pip --upgrade && \
