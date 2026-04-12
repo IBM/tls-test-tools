@@ -1,4 +1,3 @@
-# This workflow runs the python unit tests
 name: tests
 on:
   push:
@@ -7,21 +6,16 @@ on:
     branches: [main]
   workflow_dispatch: {}
 jobs:
-  build-310:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
       - name: Run unit tests
-        run: docker build . --target=test --build-arg PYTHON_VERSION=3.10
-  build-311:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Run unit tests
-        run: docker build . --target=test --build-arg PYTHON_VERSION=3.11
-  build-312:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Run unit tests
-        run: docker build . --target=test --build-arg PYTHON_VERSION=3.12
+        run: uv run --python ${{ matrix.python-version }} --extra test pytest

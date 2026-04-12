@@ -48,22 +48,27 @@ Improvements to existing functionality are tracked as [GitHub issues using the U
 
 ### Set up your dev environment
 
-#### Using Docker
+#### Using uv
 
-The easiest way to get up and running is to use the dockerized development environment which you can launch using:
+The recommended way to get up and running is to use [`uv`](https://github.com/astral-sh/uv) for managing the Python environment:
 
 ```sh
-make develop
-```
+# Install dependencies including test tools
+uv sync --extra test
 
-Within the `develop` shell, any of the `make` targets that do not require `docker` can be run directly. The shell has the local files mounted, so changes to the files on your host machine will be reflected when commands are run in the `develop` shell.
+# Run tests
+uv run pytest
+
+# Run formatting
+uv run pre-commit run --all-files
+```
 
 #### Locally
 
 You can also develop locally using standard python development practices. You'll need to install the dependencies for the unit tests. It is recommended that you do this in a virtual environment such as [`conda`](https://docs.conda.io/en/latest/miniconda.html) or [`pyenv`](https://github.com/pyenv/pyenv) so that you avoid version conflicts in a shared global dependency set.
 
 ```sh
-pip install -r requirements_test.txt
+pip install -e ".[test]"
 ```
 
 ### Run unit tests
@@ -74,14 +79,19 @@ Running the tests is as simple as:
 make test
 ```
 
-If you want to use the full set of [`pytest` CLI arguments](https://docs.pytest.org/en/6.2.x/usage.html), you can run the `scripts/run_tests.sh` script directly with any arguments added to the command.
+If you want to use the full set of [`pytest` CLI arguments](https://docs.pytest.org/en/6.2.x/usage.html), you can run the `scripts/run_tests.sh` script directly with any arguments added to the command. For example, to run only a single test without capturing output, you can do:
+
+```sh
+./scripts/run_tests.sh tests/test_tls_test_tools.py
+```
 
 ### Code formatting
 
-This project uses [pre-commit](https://pre-commit.com/) to enforce coding style using [black](https://github.com/psf/black). To set up `pre-commit` locally, you can:
+This project uses [pre-commit](https://pre-commit.com/) to enforce coding style using [black](https://github.com/psf/black) and [isort](https://pycqa.github.io/isort/). To set up `pre-commit` locally, you can:
 
 ```sh
 pip install pre-commit
+pre-commit install
 ```
 
 Coding style is enforced by the CI tests, so if not installed locally, your PR will fail until formatting has been applied.
@@ -97,7 +107,7 @@ Unsure where to begin contributing? You can start by looking through these issue
 
 To contribute to this repo, you'll use the Fork and Pull model common in many open source repositories. For details on this process, watch [how to contribute](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github).
 
-When ready, you can create a pull request. Pull requests are often referred to as "PR". In general, we follow the standard [github pull request](https://help.github.com/en/articles/about-pull-requests) process. Follow the template to provide details about your pull request to the maintainers.
+When ready, you can create a pull request. Pull requests are often referred to as "PR". In general, we follow the standard [github pull request](https://help.github.com/en/articles/about-pull-request) process. Follow the template to provide details about your pull request to the maintainers.
 
 Before sending pull requests, make sure your changes pass tests.
 
@@ -110,6 +120,13 @@ Once you've [created a pull request](#how-to-contribute), maintainers will revie
 - Write detailed commit messages
 - Break large changes into a logical series of smaller patches, which are easy to understand individually and combine to solve a broader issue
 
-<!-- ## Releasing (Maintainers only)
+## Releasing (Maintainers only)
 
-The responsibility for releasing new versions of the libraries falls to the maintainers. Releases will follow standard [semantic versioning](https://semver.org/) and be hosted on [pypi](https://pypi.org/project/jtd-to-proto/). -->
+The responsibility for releasing new versions of the libraries falls to the maintainers. Releases will follow standard [semantic versioning](https://semver.org/) and be hosted on [pypi](https://pypi.org/project/tls-test-tools/).
+
+To create a release:
+
+1. Tag the release: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+2. Push the tag: `git push origin vX.Y.Z`
+3. Create a GitHub release for the tag
+4. The CI will automatically build and publish to PyPI

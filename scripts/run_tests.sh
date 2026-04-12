@@ -5,8 +5,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$BASE_DIR"
 
 FAIL_THRESH=100.0
-python3 -m pytest \
-    --cov-config=.coveragerc \
+uv run pytest \
     --cov=tls_test_tools \
     --cov-report=term \
     --cov-report=html \
